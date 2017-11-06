@@ -9,6 +9,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"runtime"
 
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -20,6 +21,10 @@ const (
 	yellow  = 33
 	blue    = 36
 	gray    = 37
+)
+
+const (
+	WIN = "windows"
 )
 
 var (
@@ -119,7 +124,10 @@ func (f *TextFormatter) Format(entry *Entry) ([]byte, error) {
 			f.appendKeyValue(b, key, entry.Data[key])
 		}
 	}
-
+	//Added operating system specific end of line symbol.
+	if strings.ToLower(runtime.GOOS) == WIN {
+		b.WriteByte('\r')
+	}
 	b.WriteByte('\n')
 	return b.Bytes(), nil
 }
